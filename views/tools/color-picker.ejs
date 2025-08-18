@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>颜色选择器 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter">JSON 格式化</a></li>
+                        <li><a href="/base64">Base64 编解码</a></li>
+                        <li><a href="/url-encode">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker" class="active">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>颜色选择器</h1>
+                <p>选择颜色并获取各种格式的颜色值</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="colorInput">选择颜色：</label>
+                        <input type="color" id="colorInput" value="#3498db" onchange="updateColor()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hexInput">HEX 值：</label>
+                        <input type="text" id="hexInput" placeholder="#3498db" oninput="updateFromHex()">
+                        <button onclick="copyToClipboard('hexInput')" class="btn btn-secondary">复制</button>
+                    </div>
+
+                    <div class="color-preview" id="colorPreview"></div>
+
+                    <div class="color-formats">
+                        <div class="format-group">
+                            <label>RGB:</label>
+                            <span id="rgbValue">rgb(52, 152, 219)</span>
+                            <button onclick="copyToClipboard('rgbValue')" class="btn btn-secondary">复制</button>
+                        </div>
+                        
+                        <div class="format-group">
+                            <label>RGBA:</label>
+                            <span id="rgbaValue">rgba(52, 152, 219, 1)</span>
+                            <button onclick="copyToClipboard('rgbaValue')" class="btn btn-secondary">复制</button>
+                        </div>
+                        
+                        <div class="format-group">
+                            <label>HSL:</label>
+                            <span id="hslValue">hsl(204, 70%, 53%)</span>
+                            <button onclick="copyToClipboard('hslValue')" class="btn btn-secondary">复制</button>
+                        </div>
+                        
+                        <div class="format-group">
+                            <label>HSLA:</label>
+                            <span id="hslaValue">hsla(204, 70%, 53%, 1)</span>
+                            <button onclick="copyToClipboard('hslaValue')" class="btn btn-secondary">复制</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="generateRandomColor()" class="btn">随机颜色</button>
+                        <button onclick="resetColor()" class="btn btn-secondary">重置</button>
+                    </div>
+
+                    <div id="operationResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      // 初始化颜色值
+      updateColorValues();
+      
+      function updateColorValues() {
+        const colorPicker = document.getElementById('colorPicker');
+        const hexValue = colorPicker.value;
+        
+        document.getElementById('hexInput').value = hexValue;
+        document.getElementById('colorPreview').style.backgroundColor = hexValue;
+        
+        const rgb = hexToRgb(hexValue);
+        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+        
+        document.getElementById('rgbValue').value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        document.getElementById('rgbaValue').value = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+        document.getElementById('hslValue').value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        document.getElementById('hslaValue').value = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 1)`;
+      }
+      
+      function updateFromHex() {
+        const hexInput = document.getElementById('hexInput').value;
+        if (isValidHex(hexInput)) {
+          document.getElementById('colorPicker').value = hexInput;
+          updateColorValues();
+        } else {
+          showResult('❌ 请输入有效的HEX颜色值（如#FF0000）', 'error');
+        }
+      }
+      
+      function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : null;
+      }
+      
+      function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        
+        return {
+          h: Math.round(h * 360),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100)
+        };
+      }
+      
+      function isValidHex(hex) {
+        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+      }
+      
+      function generateRandomColor() {
+        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        document.getElementById('colorPicker').value = randomColor;
+        updateColorValues();
+        showResult('✅ 已生成随机颜色', 'success');
+      }
+      
+      function copyToClipboard(format) {
+        let textToCopy = '';
+        
+        switch(format) {
+          case 'hex':
+            textToCopy = document.getElementById('hexInput').value;
+            break;
+          case 'rgb':
+            textToCopy = document.getElementById('rgbValue').value;
+            break;
+          case 'hsl':
+            textToCopy = document.getElementById('hslValue').value;
+            break;
+        }
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showResult(`✅ 已复制 ${format.toUpperCase()} 值到剪贴板`, 'success');
+        }).catch(() => {
+          showResult('❌ 复制失败，请手动复制', 'error');
+        });
+      }
+      
+      function showResult(message, type) {
+        const result = document.getElementById('copyResult');
+        result.textContent = message;
+        result.style.display = 'block';
+        result.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        result.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        result.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+        
+        setTimeout(() => {
+          result.style.display = 'none';
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

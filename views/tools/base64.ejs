@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 编解码工具 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter">JSON 格式化</a></li>
+                        <li><a href="/base64" class="active">Base64 编解码</a></li>
+                        <li><a href="/url-encode">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>Base64 编解码工具</h1>
+                <p>对文本进行 Base64 编码和解码</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="textInput">输入文本：</label>
+                        <textarea id="textInput" placeholder="请输入要编码或解码的文本..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="encodeBase64()" class="btn">编码</button>
+                        <button onclick="decodeBase64()" class="btn btn-secondary">解码</button>
+                        <button onclick="clearAll()" class="btn btn-secondary">清空</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resultOutput">输出结果：</label>
+                        <textarea id="resultOutput" readonly></textarea>
+                    </div>
+
+                    <div id="operationResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function encodeBase64() {
+        const input = document.getElementById('textInput').value;
+        const output = document.getElementById('resultOutput');
+        
+        if (!input.trim()) {
+          alert('请输入要编码的文本');
+          return;
+        }
+        
+        try {
+          const encoded = btoa(unescape(encodeURIComponent(input)));
+          output.value = encoded;
+          showResult('✅ Base64编码成功', 'success');
+        } catch (error) {
+          showResult('❌ 编码失败: ' + error.message, 'error');
+          output.value = '';
+        }
+      }
+      
+      function decodeBase64() {
+        const input = document.getElementById('textInput').value.trim();
+        const output = document.getElementById('resultOutput');
+        
+        if (!input) {
+          alert('请输入要解码的Base64字符串');
+          return;
+        }
+        
+        try {
+          const decoded = decodeURIComponent(escape(atob(input)));
+          output.value = decoded;
+          showResult('✅ Base64解码成功', 'success');
+        } catch (error) {
+          showResult('❌ 解码失败: 请检查Base64格式是否正确', 'error');
+          output.value = '';
+        }
+      }
+      
+      function clearAll() {
+        document.getElementById('textInput').value = '';
+        document.getElementById('resultOutput').value = '';
+        document.getElementById('operationResult').style.display = 'none';
+      }
+      
+      function showResult(message, type) {
+        const result = document.getElementById('operationResult');
+        result.textContent = message;
+        result.style.display = 'block';
+        result.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        result.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        result.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+      }
+    </script>
+  </body>
+</html>

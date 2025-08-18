@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter">JSON 格式化</a></li>
+                        <li><a href="/base64">Base64 编解码</a></li>
+                        <li><a href="/url-encode">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code" class="active">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>二维码生成器</h1>
+                <p>生成各种类型的二维码</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="qrText">二维码内容：</label>
+                        <textarea id="qrText" placeholder="请输入要生成二维码的内容..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qrSize">二维码大小：</label>
+                        <select id="qrSize">
+                            <option value="200">200x200</option>
+                            <option value="300" selected>300x300</option>
+                            <option value="400">400x400</option>
+                            <option value="500">500x500</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="errorLevel">纠错级别：</label>
+                        <select id="errorLevel">
+                            <option value="L">L (低)</option>
+                            <option value="M" selected>M (中)</option>
+                            <option value="Q">Q (高)</option>
+                            <option value="H">H (最高)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="generateQRCode()" class="btn">生成二维码</button>
+                        <button onclick="downloadQRCode()" class="btn btn-secondary" id="downloadBtn" style="display: none;">下载二维码</button>
+                        <button onclick="clearAll()" class="btn btn-secondary">清空</button>
+                    </div>
+
+                    <div id="qrResult" class="result" style="display: none;">
+                        <canvas id="qrCanvas"></canvas>
+                    </div>
+                    
+                    <div id="messageArea" class="result" style="display: none;"></div>
+
+                    <div class="templates">
+                        <h3>常用模板：</h3>
+                        <div class="template-buttons">
+                            <button onclick="setTemplate('url')" class="btn btn-secondary">网址</button>
+                            <button onclick="setTemplate('wifi')" class="btn btn-secondary">WiFi</button>
+                            <button onclick="setTemplate('phone')" class="btn btn-secondary">电话</button>
+                            <button onclick="setTemplate('sms')" class="btn btn-secondary">短信</button>
+                            <button onclick="setTemplate('email')" class="btn btn-secondary">邮件</button>
+                            <button onclick="setTemplate('vcard')" class="btn btn-secondary">名片</button>
+                        </div>
+                    </div>
+
+                    <div class="usage-tips">
+                        <h3>使用说明：</h3>
+                        <ul>
+                            <li>支持文本、网址、WiFi密码、联系信息等多种内容</li>
+                            <li>纠错级别越高，二维码越复杂但容错性越强</li>
+                            <li>生成后可直接下载PNG格式的二维码图片</li>
+                            <li>建议使用中等纠错级别以平衡大小和容错性</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function generateQRCode() {
+        const text = document.getElementById('qrText').value.trim();
+        const size = parseInt(document.getElementById('qrSize').value);
+        const errorLevel = document.getElementById('errorLevel').value;
+        const canvas = document.getElementById('qrCanvas');
+        
+        if (!text) {
+          canvas.style.display = 'none';
+          document.getElementById('qrResult').style.display = 'none';
+          document.getElementById('downloadBtn').style.display = 'none';
+          return;
+        }
+        
+        try {
+          QRCode.toCanvas(canvas, text, {
+            width: size,
+            height: size,
+            errorCorrectionLevel: errorLevel,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          }, function (error) {
+            if (error) {
+              showResult('❌ 生成二维码失败: ' + error.message, 'error');
+              canvas.style.display = 'none';
+              document.getElementById('downloadBtn').style.display = 'none';
+            } else {
+              canvas.style.display = 'block';
+              document.getElementById('qrResult').style.display = 'block';
+              document.getElementById('downloadBtn').style.display = 'inline-block';
+              showResult('✅ 二维码生成成功', 'success');
+            }
+          });
+        } catch (error) {
+          showResult('❌ 生成二维码失败: ' + error.message, 'error');
+          canvas.style.display = 'none';
+          document.getElementById('downloadBtn').style.display = 'none';
+        }
+      }
+      
+      function downloadQRCode() {
+        const canvas = document.getElementById('qrCanvas');
+        
+        if (!canvas.style.display || canvas.style.display === 'none') {
+          showResult('❌ 请先生成二维码', 'error');
+          return;
+        }
+        
+        try {
+          const link = document.createElement('a');
+          link.download = 'qrcode.png';
+          link.href = canvas.toDataURL();
+          link.click();
+          showResult('✅ 二维码图片下载成功', 'success');
+        } catch (error) {
+          showResult('❌ 下载失败: ' + error.message, 'error');
+        }
+      }
+      
+      function setTemplate(type) {
+        const textArea = document.getElementById('qrText');
+        
+        switch(type) {
+          case 'url':
+            textArea.value = 'https://www.example.com';
+            break;
+          case 'wifi':
+            textArea.value = 'WIFI:T:WPA;S:我的WiFi;P:12345678;;';
+            break;
+          case 'phone':
+            textArea.value = 'tel:+8613812345678';
+            break;
+          case 'sms':
+            textArea.value = 'sms:+8613812345678?body=你好，这是一条测试短信';
+            break;
+          case 'email':
+            textArea.value = 'mailto:example@email.com?subject=邮件主题&body=邮件内容';
+            break;
+          case 'vcard':
+            textArea.value = 'BEGIN:VCARD\nVERSION:3.0\nFN:张三\nORG:公司名称\nTEL:+8613812345678\nEMAIL:zhangsan@example.com\nEND:VCARD';
+            break;
+        }
+        
+        generateQRCode();
+      }
+      
+      function clearAll() {
+        document.getElementById('qrText').value = '';
+        document.getElementById('qrCanvas').style.display = 'none';
+        document.getElementById('qrResult').style.display = 'none';
+        document.getElementById('downloadBtn').style.display = 'none';
+      }
+      
+      function showResult(message, type) {
+        const messageArea = document.getElementById('messageArea');
+        messageArea.textContent = message;
+        messageArea.style.display = 'block';
+        messageArea.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        messageArea.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        messageArea.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+        
+        setTimeout(() => {
+          messageArea.style.display = 'none';
+        }, 3000);
+      }
+      
+      // 检查QRCode库是否加载成功
+      window.addEventListener('load', function() {
+        if (typeof QRCode === 'undefined') {
+          showResult('❌ 加载二维码库失败，请检查网络连接', 'error');
+        }
+      });
+    </script>
+  </body>
+</html>

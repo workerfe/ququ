@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash 生成器 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter">JSON 格式化</a></li>
+                        <li><a href="/base64">Base64 编解码</a></li>
+                        <li><a href="/url-encode">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator" class="active">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>Hash 生成器</h1>
+                <p>生成各种哈希值</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="inputText">输入文本：</label>
+                        <textarea id="inputText" placeholder="请输入要生成哈希值的文本..." oninput="generateHashes()"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button onclick="generateHashes()" class="btn">生成哈希值</button>
+                        <button onclick="clearAll()" class="btn btn-secondary">清空</button>
+                    </div>
+
+                    <div id="hashResults" class="result" style="display: none;">
+                        <div class="hash-result">
+                            <label>MD5：</label>
+                            <div class="hash-output">
+                                <input type="text" id="md5Result" readonly>
+                                <button onclick="copyHash('md5')" class="copy-btn">复制</button>
+                            </div>
+                        </div>
+                        
+                        <div class="hash-result">
+                            <label>SHA1：</label>
+                            <div class="hash-output">
+                                <input type="text" id="sha1Result" readonly>
+                                <button onclick="copyHash('sha1')" class="copy-btn">复制</button>
+                            </div>
+                        </div>
+                        
+                        <div class="hash-result">
+                            <label>SHA256：</label>
+                            <div class="hash-output">
+                                <input type="text" id="sha256Result" readonly>
+                                <button onclick="copyHash('sha256')" class="copy-btn">复制</button>
+                            </div>
+                        </div>
+                        
+                        <div class="hash-result">
+                            <label>SHA512：</label>
+                            <div class="hash-output">
+                                <input type="text" id="sha512Result" readonly>
+                                <button onclick="copyHash('sha512')" class="copy-btn">复制</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="hashResult" class="result-area" style="display: none;"></div>
+                    
+                    <div class="result-area">
+                        <h4>哈希算法说明：</h4>
+                        <ul>
+                            <li><strong>MD5：</strong>128位哈希值，速度快但安全性较低，适用于文件校验</li>
+                            <li><strong>SHA1：</strong>160位哈希值，比MD5安全但仍有漏洞</li>
+                            <li><strong>SHA256：</strong>256位哈希值，目前广泛使用的安全哈希算法</li>
+                            <li><strong>SHA512：</strong>512位哈希值，最高安全级别的哈希算法</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function generateHashes() {
+        const inputText = document.getElementById('inputText').value;
+        
+        if (!inputText.trim()) {
+          clearResults();
+          document.getElementById('hashResults').style.display = 'none';
+          return;
+        }
+        
+        try {
+          // 生成各种哈希值
+          const md5Hash = CryptoJS.MD5(inputText).toString();
+          const sha1Hash = CryptoJS.SHA1(inputText).toString();
+          const sha256Hash = CryptoJS.SHA256(inputText).toString();
+          const sha512Hash = CryptoJS.SHA512(inputText).toString();
+          
+          // 显示结果
+          document.getElementById('md5Result').value = md5Hash;
+          document.getElementById('sha1Result').value = sha1Hash;
+          document.getElementById('sha256Result').value = sha256Hash;
+          document.getElementById('sha512Result').value = sha512Hash;
+          
+          // 显示结果区域
+          document.getElementById('hashResults').style.display = 'block';
+          
+          showResult('✅ 哈希值生成成功', 'success');
+        } catch (error) {
+          showResult('❌ 生成哈希值失败: ' + error.message, 'error');
+          clearResults();
+        }
+      }
+      
+      function copyHash(type) {
+        const elementId = type + 'Result';
+        const hashValue = document.getElementById(elementId).value;
+        
+        if (!hashValue) {
+          showResult('❌ 没有可复制的哈希值', 'error');
+          return;
+        }
+        
+        navigator.clipboard.writeText(hashValue).then(() => {
+          showResult(`✅ 已复制 ${type.toUpperCase()} 哈希值到剪贴板`, 'success');
+        }).catch(() => {
+          // 降级方案：创建临时文本框
+          const tempInput = document.createElement('input');
+          tempInput.value = hashValue;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+          showResult(`✅ 已复制 ${type.toUpperCase()} 哈希值到剪贴板`, 'success');
+        });
+      }
+      
+      function clearAll() {
+        document.getElementById('inputText').value = '';
+        clearResults();
+        document.getElementById('hashResults').style.display = 'none';
+        document.getElementById('hashResult').style.display = 'none';
+      }
+      
+      function clearResults() {
+        document.getElementById('md5Result').value = '';
+        document.getElementById('sha1Result').value = '';
+        document.getElementById('sha256Result').value = '';
+        document.getElementById('sha512Result').value = '';
+      }
+      
+      function showResult(message, type) {
+        const result = document.getElementById('hashResult');
+        result.textContent = message;
+        result.style.display = 'block';
+        result.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        result.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        result.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+        
+        setTimeout(() => {
+          result.style.display = 'none';
+        }, 3000);
+      }
+      
+      // 检查CryptoJS是否加载成功
+      window.addEventListener('load', function() {
+        if (typeof CryptoJS === 'undefined') {
+          showResult('❌ 加载加密库失败，请检查网络连接', 'error');
+        }
+      });
+    </script>
+  </body>
+</html>

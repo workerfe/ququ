@@ -1,11 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div class="layout-container">
+      <!-- 左侧导航 -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>🛠️ 工具箱</h1>
+          <p>便捷实用的在线工具</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <div class="nav-category">
+            <h3>📝 文本处理</h3>
+            <ul class="nav-links">
+              <li><a href="/json-formatter">🔧 JSON 格式化</a></li>
+              <li><a href="/base64">🔐 Base64 编解码</a></li>
+              <li><a href="/url-encode">🌐 URL 编解码</a></li>
+            </ul>
+          </div>
+          
+          <div class="nav-category">
+            <h3>💻 开发工具</h3>
+            <ul class="nav-links">
+              <li><a href="/color-picker">🎨 颜色选择器</a></li>
+              <li><a href="/regex-test">🔍 正则表达式测试</a></li>
+              <li><a href="/hash-generator">🔒 Hash 生成器</a></li>
+            </ul>
+          </div>
+          
+          <div class="nav-category">
+            <h3>🏠 生活工具</h3>
+            <ul class="nav-links">
+              <li><a href="/qr-code">📱 二维码生成器</a></li>
+              <li><a href="/timestamp">⏰ 时间戳转换</a></li>
+              <li><a href="/password-generator">🔐 密码生成器</a></li>
+            </ul>
+          </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <p>&copy; 2025 工具箱</p>
+        </div>
+      </aside>
+
+      <!-- 右侧主内容 -->
+      <main class="main-content">
+        <div class="content-header">
+          <h2>工具列表</h2>
+          <p>选择左侧导航中的工具开始使用</p>
+        </div>
+        
+        <div class="tools-showcase">
+          <!-- 文本处理工具 -->
+          <section class="tool-section">
+            <h3>📝 文本处理工具</h3>
+            <div class="tool-grid">
+              <div class="tool-item">
+                <a href="/json-formatter" class="tool-link">
+                  <div class="tool-icon">🔧</div>
+                  <div class="tool-info">
+                    <h4>JSON 格式化</h4>
+                    <p>格式化、压缩和验证 JSON 数据，支持语法高亮</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/base64" class="tool-link">
+                  <div class="tool-icon">🔐</div>
+                  <div class="tool-info">
+                    <h4>Base64 编解码</h4>
+                    <p>Base64 编码和解码工具，支持文本转换</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/url-encode" class="tool-link">
+                  <div class="tool-icon">🌐</div>
+                  <div class="tool-info">
+                    <h4>URL 编解码</h4>
+                    <p>URL 编码和解码工具，处理特殊字符</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- 开发工具 -->
+          <section class="tool-section">
+            <h3>💻 开发工具</h3>
+            <div class="tool-grid">
+              <div class="tool-item">
+                <a href="/color-picker" class="tool-link">
+                  <div class="tool-icon">🎨</div>
+                  <div class="tool-info">
+                    <h4>颜色选择器</h4>
+                    <p>颜色选择和格式转换，支持多种颜色格式</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/regex-test" class="tool-link">
+                  <div class="tool-icon">🔍</div>
+                  <div class="tool-info">
+                    <h4>正则表达式测试</h4>
+                    <p>在线测试正则表达式，支持匹配高亮</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/hash-generator" class="tool-link">
+                  <div class="tool-icon">🔒</div>
+                  <div class="tool-info">
+                    <h4>Hash 生成器</h4>
+                    <p>生成 MD5、SHA1、SHA256 等哈希值</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- 生活工具 -->
+          <section class="tool-section">
+            <h3>🏠 生活工具</h3>
+            <div class="tool-grid">
+              <div class="tool-item">
+                <a href="/qr-code" class="tool-link">
+                  <div class="tool-icon">📱</div>
+                  <div class="tool-info">
+                    <h4>二维码生成器</h4>
+                    <p>生成各种类型的二维码，支持多种模板</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/timestamp" class="tool-link">
+                  <div class="tool-icon">⏰</div>
+                  <div class="tool-info">
+                    <h4>时间戳转换</h4>
+                    <p>时间戳与日期时间互相转换</p>
+                  </div>
+                </a>
+              </div>
+              <div class="tool-item">
+                <a href="/password-generator" class="tool-link">
+                  <div class="tool-icon">🔐</div>
+                  <div class="tool-info">
+                    <h4>密码生成器</h4>
+                    <p>生成安全可靠的随机密码</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

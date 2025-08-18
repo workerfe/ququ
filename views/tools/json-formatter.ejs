@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 格式化工具 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter" class="active">JSON 格式化</a></li>
+                        <li><a href="/base64">Base64 编解码</a></li>
+                        <li><a href="/url-encode">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>JSON 格式化工具</h1>
+                <p>格式化、压缩和验证 JSON 数据</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="jsonInput">输入 JSON 数据：</label>
+                        <textarea id="jsonInput" placeholder="请输入 JSON 数据..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="formatJSON()" class="btn">格式化</button>
+                        <button onclick="compressJSON()" class="btn btn-secondary">压缩</button>
+                        <button onclick="validateJSON()" class="btn btn-secondary">验证</button>
+                        <button onclick="clearAll()" class="btn btn-secondary">清空</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jsonOutput">输出结果：</label>
+                        <textarea id="jsonOutput" readonly></textarea>
+                    </div>
+
+                    <div id="validationResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function formatJSON() {
+        const input = document.getElementById('jsonInput').value.trim();
+        const output = document.getElementById('jsonOutput');
+        const validation = document.getElementById('validationResult');
+        
+        if (!input) {
+          alert('请输入JSON数据');
+          return;
+        }
+        
+        try {
+          const parsed = JSON.parse(input);
+          output.value = JSON.stringify(parsed, null, 2);
+          showValidation('✅ JSON格式正确', 'success');
+        } catch (error) {
+          showValidation('❌ JSON格式错误: ' + error.message, 'error');
+          output.value = '';
+        }
+      }
+      
+      function compressJSON() {
+        const input = document.getElementById('jsonInput').value.trim();
+        const output = document.getElementById('jsonOutput');
+        
+        if (!input) {
+          alert('请输入JSON数据');
+          return;
+        }
+        
+        try {
+          const parsed = JSON.parse(input);
+          output.value = JSON.stringify(parsed);
+          showValidation('✅ JSON压缩成功', 'success');
+        } catch (error) {
+          showValidation('❌ JSON格式错误: ' + error.message, 'error');
+          output.value = '';
+        }
+      }
+      
+      function validateJSON() {
+        const input = document.getElementById('jsonInput').value.trim();
+        
+        if (!input) {
+          alert('请输入JSON数据');
+          return;
+        }
+        
+        try {
+          JSON.parse(input);
+          showValidation('✅ JSON格式正确', 'success');
+        } catch (error) {
+          showValidation('❌ JSON格式错误: ' + error.message, 'error');
+        }
+      }
+      
+      function clearAll() {
+        document.getElementById('jsonInput').value = '';
+        document.getElementById('jsonOutput').value = '';
+        document.getElementById('validationResult').style.display = 'none';
+      }
+      
+      function showValidation(message, type) {
+        const validation = document.getElementById('validationResult');
+        validation.textContent = message;
+        validation.style.display = 'block';
+        validation.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        validation.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        validation.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL 编解码工具 - 曲曲工具</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <div class="tool-layout">
+        <!-- 左侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>曲曲工具</h1>
+                <p>便捷的在线工具网站</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-category">
+                    <h3>文本处理工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/json-formatter">JSON 格式化</a></li>
+                        <li><a href="/base64">Base64 编解码</a></li>
+                        <li><a href="/url-encode" class="active">URL 编解码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>开发工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/color-picker">颜色选择器</a></li>
+                        <li><a href="/regex-test">正则表达式测试</a></li>
+                        <li><a href="/hash-generator">Hash 生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>生活工具</h3>
+                    <ul class="nav-links">
+                        <li><a href="/qr-code">二维码生成器</a></li>
+                        <li><a href="/timestamp">时间戳转换</a></li>
+                        <li><a href="/password-generator">密码生成器</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <h3>其他</h3>
+                    <ul class="nav-links">
+                        <li><a href="/">返回首页</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="tool-content">
+            <div class="tool-header">
+                <h1>URL 编解码工具</h1>
+                <p>对 URL 进行编码和解码</p>
+            </div>
+
+            <div class="tool-main">
+                <div class="tool-container">
+                    <div class="form-group">
+                        <label for="urlInput">输入 URL：</label>
+                        <textarea id="urlInput" placeholder="请输入要编码或解码的 URL..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="encodeUrl()" class="btn">编码</button>
+                        <button onclick="decodeUrl()" class="btn btn-secondary">解码</button>
+                        <button onclick="clearAll()" class="btn btn-secondary">清空</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urlOutput">输出结果：</label>
+                        <textarea id="urlOutput" readonly></textarea>
+                    </div>
+
+                    <div id="operationResult" class="result" style="display: none;"></div>
+                    <div class="result-area">
+          <h4>说明：</h4>
+          <ul>
+            <li><strong>编码：</strong>将特殊字符转换为URL安全的格式（如空格变为%20）</li>
+            <li><strong>解码：</strong>将URL编码的字符还原为原始字符</li>
+            <li><strong>常见编码：</strong>空格→%20，中文→%E4%B8%AD%E6%96%87</li>
+          </ul>
+        </div>
+                </div>
+                
+            </div>
+             
+        </div>
+         
+    </div>
+        
+      
+      </div>
+    </div>
+
+    <script>
+      function encodeURL() {
+        const input = document.getElementById('urlInput').value;
+        const output = document.getElementById('urlOutput');
+        
+        if (!input.trim()) {
+          alert('请输入要编码的文本或URL');
+          return;
+        }
+        
+        try {
+          const encoded = encodeURIComponent(input);
+          output.value = encoded;
+          showResult('✅ URL编码成功', 'success');
+        } catch (error) {
+          showResult('❌ 编码失败: ' + error.message, 'error');
+          output.value = '';
+        }
+      }
+      
+      function decodeURL() {
+        const input = document.getElementById('urlInput').value.trim();
+        const output = document.getElementById('urlOutput');
+        
+        if (!input) {
+          alert('请输入要解码的URL编码字符串');
+          return;
+        }
+        
+        try {
+          const decoded = decodeURIComponent(input);
+          output.value = decoded;
+          showResult('✅ URL解码成功', 'success');
+        } catch (error) {
+          showResult('❌ 解码失败: 请检查URL编码格式是否正确', 'error');
+          output.value = '';
+        }
+      }
+      
+      function clearAll() {
+        document.getElementById('urlInput').value = '';
+        document.getElementById('urlOutput').value = '';
+        document.getElementById('operationResult').style.display = 'none';
+      }
+      
+      function showResult(message, type) {
+        const result = document.getElementById('operationResult');
+        result.textContent = message;
+        result.style.display = 'block';
+        result.style.color = type === 'success' ? '#38a169' : '#e53e3e';
+        result.style.backgroundColor = type === 'success' ? '#f0fff4' : '#fed7d7';
+        result.style.borderColor = type === 'success' ? '#9ae6b4' : '#feb2b2';
+      }
+    </script>
+  </body>
+</html>
